@@ -1,0 +1,72 @@
+version: '3.4'
+services:
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        container_name: elasticsearch
+        expose:
+            - 9200
+            - 9300
+        environment:
+            - discovery.type=single-node
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - esdata1:/usr/share/elasticsearch/data
+        ports:
+            - 9200:9200
+        networks:
+            - esnet
+    elasticsearch2:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+        container_name: elasticsearch2
+        environment:
+            - cluster.name=docker-cluster
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - "discovery.zen.ping.unicast.hosts=elasticsearch"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - esdata2:/usr/share/elasticsearch/data
+        networks:
+            - esnet
+    kibana:
+        image: docker.elastic.co/kibana/kibana:6.5.0
+        volumes:
+            - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+        environment:
+            SERVER_NAME: kibana.example.org
+            ELASTICSEARCH_URL: http://elasticsearch.example.org
+    randolog:
+        image: golang
+        command: go run /usr/src/randolog/main.go
+        volumes:
+            - ./randolog/:/usr/src/randolog/
+        logging:
+            driver: fluentd
+            options:
+                fluentd-address: "localhost:24224"
+                tag: "docker.{{.ID}}"
+      
+    fluentd:
+        build:
+            context: ./fluentd/
+        ports:
+            - "24224:24224"
+            - "24224:24224/udp"
+
+volumes:
+    esdata1:
+        driver: local
+    esdata2:
+        driver: local
+
+networks:
+    esnet:
