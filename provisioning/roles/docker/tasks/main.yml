@@ -1,0 +1,17 @@
+---
+- name: Install docker and docker-compose
+  apt:
+    pkg: "{{item}}"
+    state: latest
+  with_items:
+    - docker-compose # docker is also installed as a dependency
+  tags:
+    - docker
+
+- name: Add the user to the docker group
+  user:
+    name: "{{ username }}"
+    groups: docker
+    append: yes
+  tags:
+    - docker

@@ -1,0 +1,38 @@
+- name: Install nginx
+  apt:
+    pkg: nginx
+    state: latest
+  tags:
+    - nginx
+
+- name: Create nginx main configuration
+  template:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+  tags:
+    - nginx
+
+- name: Create symfony nginx configuration
+  template:
+    src: application.conf
+    dest: /etc/nginx/sites-available/application.conf
+  notify: restart nginx
+  tags:
+    - nginx
+
+- name: Delete default nginx configuration
+  file:
+    name: /etc/nginx/sites-enabled/default
+    state: absent
+  tags:
+    - nginx
+
+- name: Create link for nginx configuration
+  file:
+    src: /etc/nginx/sites-available/application.conf
+    dest: /etc/nginx/sites-enabled/application.conf
+    state: link
+  notify: restart nginx
+  tags:
+    - nginx

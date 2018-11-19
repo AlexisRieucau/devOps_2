@@ -1,0 +1,13 @@
+---
+- name: Symfony dev env (PHP, Nginx, MySQL)
+  hosts: all
+  gather_facts: no
+  become: yes
+  roles:
+    - common
+    - docker
+    - elasticsearch
+    - nginx
+    - php-fpm
+    - mysql
+    - composer

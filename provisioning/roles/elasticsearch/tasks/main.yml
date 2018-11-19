@@ -1,0 +1,10 @@
+---
+- name: Apply max_map_count setting (required for elasticsearch on docker)
+  sysctl:
+    name: vm.max_map_count
+    value: 262144
+    state: present
+    reload: yes
+    sysctl_set: yes
+  tags:
+    - elasticsearch

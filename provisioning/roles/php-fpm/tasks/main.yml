@@ -1,0 +1,20 @@
+---
+- name: Install php-fpm and deps
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - php7.2
+    - php7.2-mbstring
+    - php7.2-cli
+    - php7.2-curl
+    - php7.2-fpm
+    - php7.2-mysql
+    - php7.2-xml
+    - php7.2-zip
+  tags:
+    - php-fpm
+    
+- name: Create php-fpm pool configuration
+  template: src=www.conf dest=/etc/php/7.2/fpm/pool.d/www.conf
+  notify: restart php-fpm
+  tags:
+    - php-fpm

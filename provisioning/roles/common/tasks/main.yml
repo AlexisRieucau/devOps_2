@@ -1,0 +1,22 @@
+---
+- name: install python 2
+  raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+  tags:
+    - common
+
+- name: update the apt cache
+  apt: update_cache=yes
+  tags:
+    - common
+
+- name: Install packages
+  apt: pkg={{item}} state=latest
+  with_items:
+    - curl
+    - python-pip
+    - python-setuptools
+    - unzip
+    - vim
+    - virtualenv # Python virtual environment creator
+  tags:
+    - common

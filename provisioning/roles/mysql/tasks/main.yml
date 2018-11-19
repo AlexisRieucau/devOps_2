@@ -1,0 +1,18 @@
+---
+- name: Install mysql
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - mysql-server
+  tags:
+    - mysql
+    
+- name: Create a new database with name 'application'
+  mysql_db:
+    name: application
+    state: present
+    
+- mysql_user:
+    name: user
+    password: password
+    priv: '*.*:ALL'
+    state: present

@@ -1,0 +1,11 @@
+---
+- name: Install composer
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - composer
+  tags:
+    - composer
+    
+- composer:
+    command: create-project
+    arguments: symfony/website-skeleton my-project

@@ -1,0 +1,2 @@
+vm ansible_connection=local
+vm ansible_host=192.168.33.10 ansible_user=vagrant ansible_become=true
