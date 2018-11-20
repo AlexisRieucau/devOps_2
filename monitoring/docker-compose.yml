@@ -9,10 +9,8 @@ services:
     ports:
       - "24224:24224"
       - "24224:24224/udp"
-    expose:
-      - 24224
     networks: 
-            default:
+            default: {}
             sf_monitoring:
                 aliases: [fluentd]
 
@@ -25,6 +23,9 @@ services:
       - 9200
     ports:
       - "9200:9200"
+    networks:
+      default: {}
+      sf_monitoring: {}
 
   kibana:
     image: docker.elastic.co/kibana/kibana:6.5.0
